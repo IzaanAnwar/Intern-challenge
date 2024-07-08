@@ -47,14 +47,13 @@ export default function Navbar() {
           <TvMinimal className="h-6 w-6" />
           <span className="sr-only">Acme Inc</span>
         </Link>
-        <Link to="#" className="text-muted-foreground transition-colors hover:text-foreground">
+        <Link to="/dashboard" className="text-muted-foreground hover:text-foreground">
           Dashboard
         </Link>
-
-        <Link to="#" className="text-foreground transition-colors hover:text-foreground">
+        <Link to="/posts" className="text-foreground transition-colors hover:text-foreground">
           Posts
         </Link>
-        <Link to="#" className="text-muted-foreground transition-colors hover:text-foreground">
+        <Link to="/profile" className="text-muted-foreground transition-colors hover:text-foreground">
           Profile
         </Link>
       </nav>
@@ -71,13 +70,13 @@ export default function Navbar() {
               <TvMinimal className="h-6 w-6" />
               <span className="sr-only">Acme Inc</span>
             </Link>
-            <Link to="#" className="text-muted-foreground hover:text-foreground">
+            <Link to="/dashboard" className="text-muted-foreground hover:text-foreground">
               Dashboard
             </Link>
-            <Link to="#" className="text-foreground transition-colors hover:text-foreground">
+            <Link to="/posts" className="text-foreground transition-colors hover:text-foreground">
               Posts
             </Link>
-            <Link to="#" className="text-muted-foreground transition-colors hover:text-foreground">
+            <Link to="/profile" className="text-muted-foreground transition-colors hover:text-foreground">
               Profile
             </Link>
           </nav>
@@ -95,7 +94,11 @@ export default function Navbar() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/profile" className="block w-full transition-colors hover:text-foreground">
+                Profile
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogOut}>Logout</DropdownMenuItem>
           </DropdownMenuContent>

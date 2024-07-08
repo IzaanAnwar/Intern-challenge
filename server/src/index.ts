@@ -7,6 +7,7 @@ import cors from 'cors';
 const app = express();
 const port = process.env.PORT || 8000;
 import authRouter from './routes/auth';
+import postsRouter from './routes/posts';
 
 import { authenticateToken } from './services/authorizationMiddleware';
 
@@ -33,7 +34,7 @@ app.get('/api/hello', (req, res) => {
 });
 
 app.use('/api/', authRouter);
-app.use('/api/posts', authenticateToken, authRouter);
+app.use('/api/posts/', authenticateToken, postsRouter);
 
 /* Error handler middleware */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

@@ -36,11 +36,13 @@ export async function createPost(req: Request, res: Response, next: NextFunction
 export async function getAllPosts(req: Request, res: Response, next: NextFunction) {
   const user = req.user;
   if (!user || !user.userId) {
+    console.log('lo');
+
     throw new Error('Please login ');
   }
 
   try {
-    const posts = await db.post.findMany();
+    const posts = await db.post.findMany({ orderBy: { updatedAt: 'desc' }, include: { author: true, comments: true } });
 
     return res.status(200).json({ posts });
   } catch (error) {

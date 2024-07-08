@@ -5,10 +5,9 @@ import { db } from '../config/db';
 
 export async function authenticateToken(req: Request, res: Response, next: NextFunction) {
   try {
-    const authHeader = req.headers.authorization;
-    console.log({ authHeader });
+    const token = req.headers.authorization;
 
-    const token = authHeader && authHeader.split(' ').at(1);
+    console.log({ token });
 
     if (!token) {
       return res.sendStatus(401);

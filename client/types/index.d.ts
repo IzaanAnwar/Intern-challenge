@@ -20,3 +20,14 @@ export type Post = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type Profile = {
+  id: string;
+  email: string;
+  name: string;
+  score: {
+    id: string;
+    userId: string;
+    score: number;
+  } | null;
+};

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Cookies from 'js-cookie';
+import { AxiosError } from 'axios';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +19,7 @@ export default function Signup() {
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     if (password && passwordConfirm) {
@@ -27,6 +29,10 @@ export default function Signup() {
   const submitSugnup = async () => {
     if (password !== passwordConfirm) {
       toast.error('Password mismatch');
+      return;
+    }
+    if (!password || !passwordConfirm || !name || !email) {
+      toast.error('Field missing');
       return;
     }
     setIsLoading(true);
@@ -42,12 +48,23 @@ export default function Signup() {
       const data = (await res.data) as { token: string };
       Cookies.set('access_token', data.token, { secure: true, expires: 1 });
       toast.success('Signup Success');
+      setIsSuccess(true);
     } catch (error: any) {
-      toast.error('Error', { description: error?.message || 'Something went wrong. Please try again' });
+      let errMsg = '';
+      if (error instanceof AxiosError) {
+        errMsg = error.response?.data?.message;
+      } else {
+        errMsg = error?.message || 'Something went wrong. Please try again';
+      }
+
+      toast.error('Error', { description: errMsg });
     } finally {
       setIsLoading(false);
     }
   };
+  if (isSuccess) {
+    return <Navigate to="/dashboard" />;
+  }
   return (
     <main className="flex justify-center items-center w-full min-h-full px-2 pt-20">
       <Card className="mx-auto w-full sm:max-w-sm md:w-[50%] lg:w-[26%]">

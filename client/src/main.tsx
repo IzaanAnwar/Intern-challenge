@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         toastOptions={{
           classNames: {
             success: 'bg-success text-success-foreground border-success-700',
-            error: 'bg-danger text-danger-foreground border-danger-700',
+            error: 'bg-red-500 text-white border-red-700',
           },
         }}
         duration={3000}

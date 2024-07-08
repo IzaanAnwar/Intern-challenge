@@ -1,37 +1,11 @@
-import {
-  ChevronLeft,
-  DessertIcon,
-  Home,
-  LineChart,
-  Package,
-  Package2,
-  PanelLeft,
-  PlusCircle,
-  Search,
-  SendToBackIcon,
-  Settings,
-  ShoppingCart,
-  Upload,
-  Users2,
-} from 'lucide-react';
+import { DessertIcon, PlusCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import { Textarea } from '@/components/ui/textarea';
-import { Link } from 'react-router-dom';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export function Dashboard() {
   return (
@@ -46,16 +20,23 @@ export function Dashboard() {
               <CardContent>
                 <div className="grid gap-6">
                   <div className="grid gap-3">
+                    <Label htmlFor="title">Title</Label>
+                    <Input id="title" name="title" />
+                  </div>
+                  <div className="grid gap-3">
+                    <Label htmlFor="body">Title</Label>
+
                     <Textarea
-                      id="description"
+                      id="body"
+                      name="body"
                       defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
-                      className="min-h-32"
+                      className="min-h-24"
                     />
                   </div>
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="default" className="flex justify-start items-center gap-2">
+                <Button variant="default" className="flex justify-start items-center gap-2 ml-auto">
                   <DessertIcon />
                   <p>Post</p>
                 </Button>
@@ -72,7 +53,7 @@ export function Dashboard() {
                 <CardFooter className="justify-center border-t p-4">
                   <Button size="sm" variant="ghost" className="gap-1">
                     <PlusCircle className="h-3.5 w-3.5" />
-                    Add Variant
+                    Add Comment
                   </Button>
                 </CardFooter>
               </Card>

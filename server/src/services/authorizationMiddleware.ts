@@ -1,11 +1,7 @@
 import { type Response, type Request, type NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../../types/express';
-import { updateBookingStatus } from '../cron-jobs/update-booking-status';
-import { runTryCatch } from '../utils/run-try-catch';
 import { db } from '../config/db';
-import { revokedTokens } from '../models';
-import { eq } from 'drizzle-orm';
 
 export async function authenticateToken(req: Request, res: Response, next: NextFunction) {
   try {
@@ -17,9 +13,7 @@ export async function authenticateToken(req: Request, res: Response, next: NextF
     if (!token) {
       return res.sendStatus(401);
     }
-    const [tokenData, _] = await runTryCatch(
-      db.query.revokedTokens.findFirst({ where: eq(revokedTokens.token, token) }),
-    );
+    const tokenData = await db.revokedTokens.findFirst({ where: { token: token } });
 
     if (tokenData?.token === token) {
       throw new Error('Token expired');
@@ -37,10 +31,6 @@ export async function authenticateToken(req: Request, res: Response, next: NextF
       req.user = decoded;
       console.log('Access granted');
 
-      const [_data, error] = await updateBookingStatus();
-      if (error) {
-        console.error({ error });
-      }
       next();
     } catch (error) {
       return res.sendStatus(403);

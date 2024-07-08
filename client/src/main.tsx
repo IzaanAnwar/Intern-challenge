@@ -1,10 +1,26 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+
+import './index.css';
+import { Toaster } from 'sonner';
+
+import App from './App';
+import { ThemeProvider } from './components/theme-provider';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Toaster
+        toastOptions={{
+          classNames: {
+            success: 'bg-success text-success-foreground border-success-700',
+            error: 'bg-danger text-danger-foreground border-danger-700',
+          },
+        }}
+        duration={3000}
+        position="bottom-center"
+      />
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
-)
+);

@@ -20,6 +20,7 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
       );
     }
     const { password, email, name } = bodyParsed.data;
+    const hashedPassword = await genHash(password);
     const user = await db.user.findFirst({ where: { email: email } });
     if (user) {
       throw new Error('Account Exsists for this email');
@@ -33,7 +34,7 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
       data: {
         email: email,
         name: name,
-        password: password,
+        password: hashedPassword,
       },
     });
     if (!userCreated) {

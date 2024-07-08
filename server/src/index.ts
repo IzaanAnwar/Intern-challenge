@@ -12,14 +12,14 @@ import { authenticateToken } from './services/authorizationMiddleware';
 
 app.use(bodyParser.json());
 app.use(helmet());
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 app.use(
   bodyParser.urlencoded({
     extended: true,
   }),
 );
 
-const appUrl = 'http://localhost:3000';
+const appUrl = 'http://localhost:5173';
 
 app.use(
   cors({
@@ -33,6 +33,7 @@ app.get('/api/hello', (req, res) => {
 });
 
 app.use('/api/', authRouter);
+app.use('/api/posts', authenticateToken, authRouter);
 
 /* Error handler middleware */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

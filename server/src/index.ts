@@ -8,6 +8,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 import authRouter from './routes/auth';
 import postsRouter from './routes/posts';
+import profileRouter from './routes/profile';
 
 import { authenticateToken } from './services/authorizationMiddleware';
 
@@ -35,6 +36,7 @@ app.get('/api/hello', (req, res) => {
 
 app.use('/api/', authRouter);
 app.use('/api/posts/', authenticateToken, postsRouter);
+app.use('/api/profile/', authenticateToken, profileRouter);
 
 /* Error handler middleware */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

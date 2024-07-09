@@ -3,17 +3,19 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { db } from '../config/db';
 import { createPostSchema } from '../utils/zod-schema';
+import { z } from 'zod';
+import { addDownvotee, addUpvote } from 'services/postVoter';
 
 dotenv.config();
 const NEW_POST_SCORE = 10;
 export async function createPost(req: Request, res: Response, next: NextFunction) {
   const body = await req.body;
   const user = await req.user;
-  if (!user || !user.userId) {
-    throw new Error('Please login ');
-  }
-
   try {
+    if (!user || !user.userId) {
+      throw new Error('Please login ');
+    }
+
     const bodyParsed = createPostSchema.parse(body);
     const transcationRes = await db.$transaction([
       db.post.create({
@@ -48,16 +50,66 @@ export async function createPost(req: Request, res: Response, next: NextFunction
 
 export async function getAllPosts(req: Request, res: Response, next: NextFunction) {
   const user = req.user;
-  if (!user || !user.userId) {
-    console.log('lo');
-
-    throw new Error('Please login ');
-  }
 
   try {
-    const posts = await db.post.findMany({ orderBy: { updatedAt: 'desc' }, include: { author: true, comments: true } });
+    if (!user || !user.userId) {
+      console.log('lo');
 
-    return res.status(200).json({ posts });
+      throw new Error('Please login ');
+    }
+    const posts = await db.post.findMany({
+      orderBy: { updatedAt: 'desc' },
+      include: { author: true, comments: true, upvote: true },
+    });
+    const postsWithTotalVotes = posts.map((post) => {
+      const totalVotes = post.upvote.reduce((sum, upvote) => sum + upvote.value, 0);
+      return {
+        ...post,
+        totalVotes,
+      };
+    });
+
+    return res.status(200).json({ posts: postsWithTotalVotes });
+  } catch (error) {
+    next(error); // Pass errors to your error-handling middleware
+  }
+}
+
+export async function upvote(req: Request, res: Response, next: NextFunction) {
+  const user = req.user;
+  try {
+    const body = z.object({ postId: z.string(), userId: z.string() }).parse(await req.body);
+
+    if (!user || !user.userId) {
+      console.log('lo');
+
+      throw new Error('Please login ');
+    }
+    const upvote = await addUpvote(body.postId, body.userId);
+    if (!upvote) {
+      throw new Error('Upvote failed');
+    }
+    return res.status(204);
+  } catch (error) {
+    next(error); // Pass errors to your error-handling middleware
+  }
+}
+
+export async function downVote(req: Request, res: Response, next: NextFunction) {
+  const user = req.user;
+  try {
+    const body = z.object({ postId: z.string(), userId: z.string() }).parse(await req.body);
+    if (!user || !user.userId) {
+      console.log('lo');
+
+      throw new Error('Please login ');
+    }
+
+    const upvote = await addDownvotee(body.postId, body.userId);
+    if (!upvote) {
+      throw new Error('Downvote failed');
+    }
+    return res.status(204);
   } catch (error) {
     next(error); // Pass errors to your error-handling middleware
   }

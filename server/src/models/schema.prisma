@@ -22,7 +22,7 @@ model Post {
   comments  Comment[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Upvote    Upvote[]
+  upvote    Upvote[]
 }
 
 model User {
@@ -32,7 +32,7 @@ model User {
   password String
   score    Scores?
   posts    Post[]
-  Upvote   Upvote[]
+  upvote   Upvote[]
 }
 
 model Comment {

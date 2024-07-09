@@ -10,3 +10,12 @@ export async function addUpvote(postId: string, userId: string) {
   });
   return upvote;
 }
+
+export async function addDownvotee(postId: string, userId: string) {
+  const upvote = await db.upvote.upsert({
+    where: { postId_userId: { postId, userId } },
+    update: { value: DOWNVOTE },
+    create: { postId, userId, value: -1 },
+  });
+  return upvote;
+}

@@ -19,3 +19,16 @@ export async function addDownvotee(postId: string, userId: string) {
   });
   return upvote;
 }
+
+export async function getTotalVotes(postId: string) {
+  const upvotes = await db.upvote.aggregate({
+    _sum: {
+      value: true,
+    },
+    where: {
+      postId: postId,
+    },
+  });
+
+  return upvotes._sum.value || 0;
+}

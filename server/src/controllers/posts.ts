@@ -1,10 +1,9 @@
 import { type Response, type Request, type NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { db } from '../config/db';
 import { createPostSchema } from '../utils/zod-schema';
 import { z } from 'zod';
-import { addDownvotee, addUpvote } from 'services/postVoter';
+import { addDownvotee, addUpvote } from '../services/postVoter';
 
 dotenv.config();
 const NEW_POST_SCORE = 10;

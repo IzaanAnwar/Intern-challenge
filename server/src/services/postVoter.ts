@@ -1,4 +1,4 @@
-import { db } from 'config/db';
+import { db } from '../config/db';
 const UPVOTE = 1;
 const DOWNVOTE = 1;
 

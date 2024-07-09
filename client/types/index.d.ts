@@ -12,11 +12,20 @@ export type Post = {
     createdAt: Date;
     updatedAt: Date;
   }[];
-} & {
+
+  totalVotes: number;
+  upvote: {
+    id: string;
+    value: number;
+    postId: string;
+    userId: string;
+  }[];
+
   id: string;
   title: string;
   body: string;
   authorId: string;
+  upvotes: number;
   createdAt: Date;
   updatedAt: Date;
 };

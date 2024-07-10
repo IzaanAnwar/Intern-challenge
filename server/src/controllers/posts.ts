@@ -5,6 +5,9 @@ import { commentOnPostSchema, createPostSchema, replyOnCommentSchema } from '../
 import { z } from 'zod';
 import { addVote } from '../services/postVoter';
 
+const COMMENT_POINTS_FOR_AUTHOR: Readonly<number> = 5;
+const COMMENT_FOR_USER: Readonly<number> = 3;
+
 dotenv.config();
 const NEW_POST_SCORE = 10;
 export async function createPost(req: Request, res: Response, next: NextFunction) {
@@ -163,13 +166,34 @@ export async function commentOnPost(req: Request, res: Response, next: NextFunct
       throw new Error('Login to comment');
     }
     const { comment, postId } = commentOnPostSchema.parse(await req.body);
-    const newComment = await db.comment.create({
-      data: {
-        comment,
-        postId,
-        authorId: user.userId,
-      },
-    });
+    const orignalPost = await db.post.findFirstOrThrow({ where: { id: postId } });
+    const newComment = await db.$transaction([
+      db.scores.upsert({
+        where: {
+          userId: user.userId,
+        },
+        update: {
+          score: {
+            increment: COMMENT_FOR_USER,
+          },
+        },
+        create: {
+          userId: user.userId,
+          score: COMMENT_FOR_USER,
+        },
+      }),
+      db.scores.update({
+        where: { userId: orignalPost.authorId },
+        data: { score: { increment: COMMENT_POINTS_FOR_AUTHOR } },
+      }),
+      db.comment.create({
+        data: {
+          comment,
+          postId,
+          authorId: user.userId,
+        },
+      }),
+    ]);
 
     res.status(201).json({ comment: newComment });
   } catch (error) {

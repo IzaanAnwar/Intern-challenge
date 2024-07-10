@@ -25,7 +25,6 @@ export type Post = {
   title: string;
   body: string;
   authorId: string;
-  upvotes: number;
   createdAt: Date;
   updatedAt: Date;
 };

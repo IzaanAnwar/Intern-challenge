@@ -15,3 +15,14 @@ export const createPostSchema = z.object({
   title: z.string(),
   body: z.string(),
 });
+
+export const commentOnPostSchema = z.object({
+  postId: z.string(),
+  comment: z.string(),
+});
+
+export const replyOnCommentSchema = z.object({
+  reply: z.string(),
+  commentId: z.string(),
+  postId: z.string(),
+});

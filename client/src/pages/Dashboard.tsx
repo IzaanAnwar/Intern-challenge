@@ -1,4 +1,5 @@
-import { CircleUser, DessertIcon, PlusCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowBigUp, CircleUser, DessertIcon, MessageSquare, PlusCircle } from 'lucide-react';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import moment from 'moment';
@@ -9,8 +10,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useEffect, useState } from 'react';
 import { api } from '@/lib/axios-instance';
+import { getCurrentUserId } from '@/lib/utils';
 
 export function Dashboard() {
   const [posts, setPosts] = useState<Post[] | undefined>([]);
@@ -73,6 +74,28 @@ export function Dashboard() {
       getAllPosts();
     }
   }, [refetch]);
+
+  const handleVote = async (postId: string) => {
+    try {
+      const res = await api.post('/posts/vote', { postId });
+      if (res.status !== 200) {
+        throw new Error(`Error Voting post`);
+      }
+      setPosts((posts) =>
+        posts?.map((post) => (post.id === postId ? { ...post, totalVotes: res.data.totalVotes } : post)),
+      );
+      setRefetch(true);
+    } catch (error: any) {
+      let errMsg = '';
+      if (error instanceof AxiosError) {
+        errMsg = error.response?.data?.message;
+      } else {
+        errMsg = error?.message || 'Something went wrong. Please try again';
+      }
+
+      toast.error('Error', { description: errMsg });
+    }
+  };
   if (isLoading) {
     return <div>loading...</div>;
   }
@@ -113,30 +136,40 @@ export function Dashboard() {
             </Card>
             <section className="space-y-6">
               <h1>Latest Posts</h1>
-              {posts?.map((post) => {
+              {posts?.map((post, i) => {
+                const currUserId = getCurrentUserId();
+                const isUpvoted = post.upvote.find((item) => item.userId === currUserId);
+
                 return (
                   <Card
                     key={post.id}
                     x-chunk="dashboard-01-chunk-1"
-                    className="hover:shadow-lg hover:border-primary duration-200 "
+                    className="hover:shadow-lg hover:border-primary duration-200 gap-2 px-4"
                   >
-                    <CardHeader className="space-y-2 cursor-pointer">
-                      <CardTitle className="text-sm flex justify-start items-center gap-1">
-                        <CircleUser className="h-5 w-5" />
-                        <p>{post.author.name}</p>
-                        <p className="text-xs ml-2">{moment(post.updatedAt).fromNow()}</p>
-                      </CardTitle>
-                      <CardTitle>{post.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription className="">{post.body}</CardDescription>
-                    </CardContent>
-                    <CardFooter className="justify-center border-t p-4">
-                      <Button size="sm" variant="ghost" className="gap-1">
-                        <PlusCircle className="h-3.5 w-3.5" />
-                        Add Comment
-                      </Button>
-                    </CardFooter>
+                    <div className="min-w-full">
+                      <CardHeader className="space-y-2 cursor-pointer ">
+                        <CardTitle className="text-sm flex justify-start items-center gap-1">
+                          <CircleUser className="h-5 w-5" />
+                          <p>{post.author.name}</p>
+                          <p className="text-xs ml-2">{moment(post.updatedAt).fromNow()}</p>
+                        </CardTitle>
+                        <CardTitle>{post.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <CardDescription className="">{post.body}</CardDescription>
+                      </CardContent>
+                      <CardFooter className="justify-start gap-12 border-t  p-4">
+                        <span className="flex justify-start items-center gap-1" onClick={() => handleVote(post.id)}>
+                          <ArrowBigUp fill={isUpvoted ? 'currentColor' : 'none'} />
+                          <p>{post.totalVotes}</p>
+                        </span>
+
+                        <span className="flex justify-start items-center gap-1">
+                          <MessageSquare fill={'none'} />
+                          <p>{post.comments.length}</p>
+                        </span>
+                      </CardFooter>
+                    </div>
                   </Card>
                 );
               })}

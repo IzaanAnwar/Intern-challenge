@@ -1,7 +1,7 @@
 import { type Response, type Request, type NextFunction } from 'express';
 import dotenv from 'dotenv';
 import { db } from '../config/db';
-import { createPostSchema } from '../utils/zod-schema';
+import { commentOnPostSchema, createPostSchema, replyOnCommentSchema } from '../utils/zod-schema';
 import { z } from 'zod';
 import { addVote } from '../services/postVoter';
 
@@ -12,7 +12,7 @@ export async function createPost(req: Request, res: Response, next: NextFunction
   const user = await req.user;
   try {
     if (!user || !user.userId) {
-      throw new Error('Please login ');
+      return res.status(403);
     }
 
     const bodyParsed = createPostSchema.parse(body);
@@ -47,6 +47,63 @@ export async function createPost(req: Request, res: Response, next: NextFunction
   }
 }
 
+export async function getPost(req: Request, res: Response, next: NextFunction) {
+  const user = req.user;
+
+  try {
+    if (!user || !user.userId) {
+      return res.status(403);
+    }
+    const { postId } = z.object({ postId: z.string() }).parse(req.params);
+    const post = await db.post.findFirst({
+      where: { id: postId },
+      include: {
+        author: {
+          select: {
+            email: true,
+            id: true,
+            name: true,
+          },
+        },
+        comments: {
+          orderBy: { updatedAt: 'desc' },
+          include: {
+            author: {
+              select: {
+                email: true,
+                id: true,
+                name: true,
+              },
+            },
+            replies: {
+              orderBy: { updatedAt: 'desc' },
+              include: {
+                author: {
+                  select: {
+                    email: true,
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        upvote: true,
+      },
+    });
+    if (!post) {
+      throw new Error('Post not found');
+    }
+
+    const totalVotes = post.upvote.reduce((sum, upvote) => sum + upvote.value, 0);
+
+    return res.status(200).json({ post: { ...post, totalVotes } });
+  } catch (error) {
+    next(error); // Pass errors to your error-handling middleware
+  }
+}
+
 export async function getAllPosts(req: Request, res: Response, next: NextFunction) {
   const user = req.user;
 
@@ -58,11 +115,16 @@ export async function getAllPosts(req: Request, res: Response, next: NextFunctio
     }
     const posts = await db.post.findMany({
       orderBy: { updatedAt: 'desc' },
-      include: { author: true, comments: true, upvote: true },
+      include: {
+        author: true,
+        comments: {
+          orderBy: { updatedAt: 'desc' },
+        },
+        upvote: true,
+      },
     });
     const postsWithTotalVotes = posts.map((post) => {
       const totalVotes = post.upvote.reduce((sum, upvote) => sum + upvote.value, 0);
-      console.log({ totalVotes });
 
       return {
         ...post,
@@ -89,6 +151,49 @@ export async function voteAPost(req: Request, res: Response, next: NextFunction)
     const message = await addVote(body.postId, user.userId);
 
     return res.status(200).json({ message });
+  } catch (error) {
+    next(error); // Pass errors to your error-handling middleware
+  }
+}
+
+export async function commentOnPost(req: Request, res: Response, next: NextFunction) {
+  const user = req.user;
+  try {
+    if (!user || !user?.userId) {
+      throw new Error('Login to comment');
+    }
+    const { comment, postId } = commentOnPostSchema.parse(await req.body);
+    const newComment = await db.comment.create({
+      data: {
+        comment,
+        postId,
+        authorId: user.userId,
+      },
+    });
+
+    res.status(201).json({ comment: newComment });
+  } catch (error) {
+    next(error); // Pass errors to your error-handling middleware
+  }
+}
+
+export async function replyOnComment(req: Request, res: Response, next: NextFunction) {
+  const user = req.user;
+  try {
+    if (!user || !user?.userId) {
+      throw new Error('Login to Reply');
+    }
+    const { commentId, reply, postId } = replyOnCommentSchema.parse(await req.body);
+    const newReply = await db.comment.create({
+      data: {
+        comment: reply,
+        parentId: commentId,
+        postId: postId,
+        authorId: user.userId,
+      },
+    });
+
+    res.status(201).json({ reply: newReply });
   } catch (error) {
     next(error); // Pass errors to your error-handling middleware
   }

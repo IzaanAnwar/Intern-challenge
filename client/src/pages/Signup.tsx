@@ -26,7 +26,7 @@ export default function Signup() {
       setPasswordMatch(password === passwordConfirm);
     }
   }, [password, passwordConfirm]);
-  const submitSugnup = async () => {
+  const submitSignup = async () => {
     if (password !== passwordConfirm) {
       toast.error('Password mismatch');
       return;
@@ -45,8 +45,9 @@ export default function Signup() {
       if (res.status !== 201) {
         throw new Error(res.data?.message || 'Could not create user');
       }
-      const data = (await res.data) as { token: string };
+      const data = (await res.data) as { token: string; userId: string };
       Cookies.set('access_token', data.token, { secure: true, expires: 1 });
+      Cookies.set('user_id', data.userId, { secure: true, expires: 1 });
       toast.success('Signup Success');
       setIsSuccess(true);
     } catch (error: any) {
@@ -108,7 +109,7 @@ export default function Signup() {
                 <p className="min-h-4"></p>
               )}
             </div>
-            <Button type="submit" className="w-full" onClick={submitSugnup} loading={isLoading} disabled={isLoading}>
+            <Button type="submit" className="w-full" onClick={submitSignup} loading={isLoading} disabled={isLoading}>
               Create an account
             </Button>
           </div>

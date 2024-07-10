@@ -32,8 +32,9 @@ export default function Signin() {
       if (res.status !== 200) {
         throw new Error(res.data?.message || 'Something went wrong');
       }
-      const data = (await res.data) as { token: string };
+      const data = (await res.data) as { token: string; userId: string };
       Cookies.set('access_token', data.token, { secure: true, expires: 1 });
+      Cookies.set('user_id', data.userId, { secure: true, expires: 1 });
       toast.success('Signup Success');
       setIsSuccess(true);
     } catch (error: any) {

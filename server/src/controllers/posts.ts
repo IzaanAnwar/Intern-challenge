@@ -141,6 +141,41 @@ export async function getAllPosts(req: Request, res: Response, next: NextFunctio
   }
 }
 
+export async function getUserPosts(req: Request, res: Response, next: NextFunction) {
+  const user = req.user;
+
+  try {
+    if (!user || !user.userId) {
+      console.log('lo');
+
+      throw new Error('Please login ');
+    }
+    const posts = await db.post.findMany({
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        author: true,
+        comments: {
+          orderBy: { updatedAt: 'desc' },
+        },
+        upvote: true,
+      },
+      where: { authorId: user.userId },
+    });
+    const postsWithTotalVotes = posts.map((post) => {
+      const totalVotes = post.upvote.reduce((sum, upvote) => sum + upvote.value, 0);
+
+      return {
+        ...post,
+        totalVotes,
+      };
+    });
+
+    return res.status(200).json({ posts: postsWithTotalVotes });
+  } catch (error) {
+    next(error); // Pass errors to your error-handling middleware
+  }
+}
+
 export async function voteAPost(req: Request, res: Response, next: NextFunction) {
   const user = req.user;
   try {

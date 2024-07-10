@@ -79,14 +79,14 @@ export async function getAllPosts(req: Request, res: Response, next: NextFunctio
 export async function voteAPost(req: Request, res: Response, next: NextFunction) {
   const user = req.user;
   try {
-    const body = z.object({ postId: z.string(), userId: z.string() }).parse(await req.body);
+    const body = z.object({ postId: z.string() }).parse(await req.body);
 
     if (!user || !user.userId) {
-      console.log('lo');
+      console.log('Please Login');
 
       throw new Error('Please login ');
     }
-    const message = await addVote(body.postId, body.userId);
+    const message = await addVote(body.postId, user.userId);
 
     return res.status(200).json({ message });
   } catch (error) {

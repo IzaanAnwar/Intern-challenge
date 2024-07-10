@@ -5,6 +5,7 @@ import Signin from './pages/Signin';
 import { Dashboard } from './pages/Dashboard';
 import Profile from './pages/Profile';
 import PostComments from './pages/PostComments';
+import { UsersPosts } from './pages/UsersPosts';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard/:postId" element={<PostComments />} />
+        <Route path="/user-posts/" element={<UsersPosts />} />
       </Routes>
     </BrowserRouter>
   );

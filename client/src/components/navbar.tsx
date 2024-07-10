@@ -1,4 +1,4 @@
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
@@ -15,8 +15,11 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { ModeToggle } from './mode-toggle';
 import { useState } from 'react';
 import { api } from '@/lib/axios-instance';
+import { cn } from '@/lib/utils';
 
 export default function Navbar() {
+  const location = useLocation();
+
   const [loggedOut, setLoggedOut] = useState(false);
   async function handleLogOut() {
     try {
@@ -44,16 +47,34 @@ export default function Navbar() {
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Link to="#" className="flex items-center gap-2 text-lg font-semibold md:text-base">
-          <TvMinimal className="h-6 w-6" />
+          <img src="/logo.png" width={100} height={100} />
           <span className="sr-only">Acme Inc</span>
         </Link>
-        <Link to="/dashboard" className="text-muted-foreground hover:text-foreground">
+        <Link
+          to="/dashboard"
+          className={cn(
+            'text-muted-foreground hover:text-foreground',
+            location.pathname.includes('/dashboard') && 'font-bold',
+          )}
+        >
           Dashboard
         </Link>
-        <Link to="/posts" className="text-foreground transition-colors hover:text-foreground">
-          Posts
+        <Link
+          to="/user-posts"
+          className={cn(
+            'text-muted-foreground hover:text-foreground min-w-fit',
+            location.pathname.includes('/user-posts') && 'font-bold',
+          )}
+        >
+          My Posts
         </Link>
-        <Link to="/profile" className="text-muted-foreground transition-colors hover:text-foreground">
+        <Link
+          to="/profile"
+          className={cn(
+            'text-muted-foreground hover:text-foreground',
+            location.pathname.includes('/profile') && 'font-bold',
+          )}
+        >
           Profile
         </Link>
       </nav>
@@ -70,13 +91,31 @@ export default function Navbar() {
               <TvMinimal className="h-6 w-6" />
               <span className="sr-only">Acme Inc</span>
             </Link>
-            <Link to="/dashboard" className="text-muted-foreground hover:text-foreground">
+            <Link
+              to="/dashboard"
+              className={cn(
+                'text-muted-foreground hover:text-foreground',
+                location.pathname.includes('/dashboard') && 'font-bold',
+              )}
+            >
               Dashboard
             </Link>
-            <Link to="/posts" className="text-foreground transition-colors hover:text-foreground">
-              Posts
+            <Link
+              to="/user-posts"
+              className={cn(
+                'text-muted-foreground hover:text-foreground',
+                location.pathname.includes('/user-posts') && 'font-bold',
+              )}
+            >
+              My Posts
             </Link>
-            <Link to="/profile" className="text-muted-foreground transition-colors hover:text-foreground">
+            <Link
+              to="/profile"
+              className={cn(
+                'text-muted-foreground hover:text-foreground',
+                location.pathname.includes('/profile') && 'font-bold',
+              )}
+            >
               Profile
             </Link>
           </nav>

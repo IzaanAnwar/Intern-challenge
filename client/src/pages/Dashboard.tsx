@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { api } from '@/lib/axios-instance';
 import { getCurrentUserId } from '@/lib/utils';
 import { Link } from 'react-router-dom';
+import { PostCardsLoading } from '@/components/loading-page';
 
 export function Dashboard() {
   const [posts, setPosts] = useState<Post[] | undefined>([]);
@@ -98,7 +99,7 @@ export function Dashboard() {
     }
   };
   if (isLoading) {
-    return <div>loading...</div>;
+    return <PostCardsLoading />;
   }
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -151,8 +152,7 @@ export function Dashboard() {
                       <Link to={`/dashboard/${post.id}`}>
                         <CardHeader className="space-y-2 cursor-pointer ">
                           <CardTitle className="text-sm flex justify-start items-center gap-1">
-                            <CircleUser className="h-5 w-5" />
-                            <p>{post.author.name}</p>
+                            <p>u/{post.author.name}</p>
                             <p className="text-xs ml-2">{moment(post.updatedAt).fromNow()}</p>
                           </CardTitle>
                           <CardTitle>{post.title}</CardTitle>

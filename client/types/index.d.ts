@@ -3,15 +3,8 @@ export type Post = {
     id: string;
     email: string;
     name: string;
-    password: string;
   };
-  comments: {
-    id: string;
-    comment: string;
-    postId: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
+  comments: Comment[];
 
   totalVotes: number;
   upvote: {
@@ -29,6 +22,26 @@ export type Post = {
   updatedAt: Date;
 };
 
+export type Comment = {
+  id: string;
+  comment: string;
+  postId: string;
+  authorId: string;
+  parentId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  author: { id: string; email: string; name: string };
+  replies: {
+    id: string;
+    comment: string;
+    postId: string;
+    authorId: string;
+    parentId: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    author: { id: string; email: string; name: string };
+  }[];
+};
 export type Profile = {
   id: string;
   email: string;

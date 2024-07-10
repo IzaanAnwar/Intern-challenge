@@ -1,10 +1,13 @@
-import { createPost, getAllPosts, voteAPost } from '../controllers/posts';
+import { commentOnPost, createPost, getAllPosts, getPost, replyOnComment, voteAPost } from '../controllers/posts';
 import { Router } from 'express';
 
 const router: Router = Router();
 
 router.get('/', getAllPosts);
+router.get('/:postId', getPost);
 router.post('/create', createPost);
 router.post('/vote', voteAPost);
+router.post('/comment', commentOnPost);
+router.post('/comment/reply', replyOnComment);
 
 export default router;

@@ -1,4 +1,6 @@
 import express, { type Response, type Request, type NextFunction } from 'express';
+import { ErrorRequestHandler } from 'express';
+import { MongoError } from 'mongodb';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -40,10 +42,21 @@ app.use('/api/profile/', authenticateToken, profileRouter);
 
 /* Error handler middleware */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  // @ts-ignore
-  const statusCode = err?.statusCode || 500;
-  console.error({ message: err.message }, err.stack);
-  res.status(statusCode).json({ message: err.message });
+  // Default status code for errors
+  let statusCode = 500;
+  let message = 'Internal Server Error';
+
+  // Handle specific MongoDB errors
+  if (err instanceof MongoError) {
+    if (err.message.includes('Malformed ObjectID')) {
+      statusCode = 400; // Bad Request
+      message = 'Invalid ObjectID provided';
+    } else {
+      message = err.errmsg;
+    }
+  }
+  console.error({ err });
+  res.status(statusCode).json({ message });
 
   return;
 });

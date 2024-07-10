@@ -146,22 +146,22 @@ export function Dashboard() {
                   <Card
                     key={post.id}
                     x-chunk="dashboard-01-chunk-1"
-                    className="hover:shadow-lg hover:border-primary duration-200 gap-2 px-4"
+                    className="hover:shadow-lg hover:border-primary duration-200 gap-2 px-4 group"
                   >
                     <div className="min-w-full">
                       <Link to={`/dashboard/${post.id}`}>
-                        <CardHeader className="space-y-2 cursor-pointer ">
+                        <CardHeader className="space-y-2 cursor-pointer group-hover:text-primary">
                           <CardTitle className="text-sm flex justify-start items-center gap-1">
                             <p>u/{post.author.name}</p>
                             <p className="text-xs ml-2">{moment(post.updatedAt).fromNow()}</p>
                           </CardTitle>
                           <CardTitle>{post.title}</CardTitle>
                         </CardHeader>
-                      </Link>
 
-                      <CardContent>
-                        <CardDescription className="">{post.body}</CardDescription>
-                      </CardContent>
+                        <CardContent>
+                          <CardDescription className="">{post.body}</CardDescription>
+                        </CardContent>
+                      </Link>
                       <CardFooter className="justify-start gap-12 border-t  p-4">
                         <span className="flex justify-start items-center gap-1" onClick={() => handleVote(post.id)}>
                           <ArrowBigUp fill={isUpvoted ? 'currentColor' : 'none'} />

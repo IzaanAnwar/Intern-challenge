@@ -28,7 +28,8 @@
     "react-router-dom": "^6.24.1",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-animated": "^1.1.2"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",

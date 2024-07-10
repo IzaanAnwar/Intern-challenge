@@ -1,49 +1,25 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Comment, Post } from 'types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useEffect, useState } from 'react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { api } from '@/lib/axios-instance';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import moment from 'moment';
+import { ArrowBigUp, MessageSquare } from 'lucide-react';
+import { getCurrentUserId } from '@/lib/utils';
+import { PostPageLoading } from '@/components/loading-page';
 
 export default function PostComments() {
   const params = useParams();
   const [post, setPost] = useState<Post | undefined>();
   const [refetch, setRefetch] = useState(true);
-  const [comments, setComments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMutationPending, setIsMutationPending] = useState(false);
   const [commentText, setCommentText] = useState<string>('');
-  // const createPost = async () => {
-  //   if (!title || !body) {
-  //     toast.error('Title or Body Missing');
-  //     return;
-  //   }
-  //   setIsMutationPending(true);
-  //   try {
-  //     const res = await api.post('/posts/create', { title, body });
-  //     if (res.status !== 201) {
-  //       throw new Error('Error creating  post');
-  //     }
-  //     const allPosts = res.data?.posts as Post[] | undefined;
-  //     setPosts(allPosts);
-  //   } catch (error: any) {
-  //     let errMsg = '';
-  //     if (error instanceof AxiosError) {
-  //       errMsg = error.response?.data?.message;
-  //     } else {
-  //       errMsg = error?.message || 'Something went wrong. Please try again';
-  //     }
 
-  //     toast.error('Error', { description: errMsg });
-  //   } finally {
-  //     setIsMutationPending(false);
-  //     setRefetch(true);
-  //   }
-  // };
   useEffect(() => {
     async function getAllPosts() {
       try {
@@ -81,35 +57,29 @@ export default function PostComments() {
         comment: commentText,
         postId: params?.postId,
       });
-      setComments([...comments, response.data]);
+      if (response.status !== 201) {
+        throw new Error(`Error Commenting the post`);
+      }
       setRefetch(true);
-    } catch (error) {
+      setCommentText('');
+    } catch (error: any) {
       console.error('Failed to post comment:', error);
+      let errMsg = '';
+      if (error instanceof AxiosError) {
+        errMsg = error.response?.data?.message;
+      } else {
+        errMsg = error?.message || 'Something went wrong. Please try again';
+      }
+
+      toast.error('Error', { description: errMsg });
     } finally {
       setIsMutationPending(false);
     }
   };
 
-  const handleReply = async (parentId: string, replyText: string) => {
+  const handleVote = async () => {
     try {
-      const response = await api.post(`/posts/comment/reply`, {
-        reply: replyText,
-        commentId: parentId,
-        postId: params?.postId,
-      });
-      const updatedComments = comments.map((comment) =>
-        comment.id === parentId ? { ...comment, replies: [...comment.replies, response.data] } : comment,
-      );
-      setComments(updatedComments);
-      setRefetch(true);
-    } catch (error) {
-      console.error('Failed to post reply:', error);
-    }
-  };
-
-  const handleVote = async (postId: string) => {
-    try {
-      const res = await api.post('/posts/vote', { postId });
+      const res = await api.post('/posts/vote', { postId: params?.postId });
       if (res.status !== 200) {
         throw new Error(`Error Voting post`);
       }
@@ -127,40 +97,43 @@ export default function PostComments() {
     }
   };
   if (isLoading) {
-    return <div>loading...</div>;
+    return <PostPageLoading />;
   }
   return (
     <div className="w-full max-w-3xl mx-auto py-8 px-4 md:px-0 bg-background">
-      <PostContainer title={post?.title!} body={post?.body!} author={post?.author.name!} createdAt={post?.createdAt!} />
+      <PostContainer post={post} onVote={handleVote} />
       <div className="mt-12 space-y-6">
         <h2 className="text-2xl font-bold">Comments</h2>
         <div className="space-y-6">
-          <div className="flex items-start gap-4">
-            <div className="flex-1 pb-6">
-              <Textarea
-                placeholder="Add a comment..."
-                className="mb-2 "
-                onChange={(e) => setCommentText(e.target.value)}
-              />
-              <Button
-                size="sm"
-                onClick={async () => {
-                  if (!commentText) {
-                    toast.error('No Input');
-                    return;
-                  }
-                  await handlePostComment();
-                }}
-                loading={isMutationPending}
-              >
-                Post Comment
-              </Button>
+          {post && (
+            <div className="flex items-start gap-4">
+              <div className="flex-1 pb-6">
+                <Textarea
+                  placeholder="Add a comment..."
+                  className="mb-2 "
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                />
+                <Button
+                  size="sm"
+                  onClick={async () => {
+                    if (!commentText) {
+                      toast.error('No Input');
+                      return;
+                    }
+                    await handlePostComment();
+                  }}
+                  loading={isMutationPending}
+                >
+                  Post Comment
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
           <div className="space-y-4  ">
             {post?.comments.map(
               (comment) =>
-                !comment.parentId && <CommentThread key={comment.id} comment={comment} onReply={handleReply} />,
+                !comment.parentId && <CommentThread key={comment.id} comment={comment} setRefetch={setRefetch} />,
             )}
           </div>
         </div>
@@ -171,57 +144,108 @@ export default function PostComments() {
 
 type CommentThreadProps = {
   comment: Comment;
-  onReply: (parentId: string, replyText: string) => Promise<void>;
+  setRefetch: Dispatch<SetStateAction<boolean>>;
 };
 
-function CommentThread({ comment, onReply }: CommentThreadProps) {
+function CommentThread({ comment, setRefetch }: CommentThreadProps) {
   const [replyText, setReplyText] = useState<string>('');
+  const [showReplyArea, setShowReplyArea] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const handleReply = async () => {
+    setIsLoading(true);
+    try {
+      const response = await api.post(`/posts/comment/reply`, {
+        reply: replyText,
+        commentId: comment.id,
+        postId: comment.postId,
+      });
+      if (response.status !== 201) {
+        throw new Error('Something went wrong');
+      }
+      setReplyText('');
+      setRefetch(true);
+    } catch (error: any) {
+      console.error('Failed to post reply:', error);
+      let errMsg = '';
+      if (error instanceof AxiosError) {
+        errMsg = error.response?.data?.message;
+      } else {
+        errMsg = error?.message || 'Something went wrong. Please try again';
+      }
 
+      toast.error('Error', { description: errMsg });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className=" pb-4 ">
-      <div className="bg-foreground/10 p-2">
+      <div className="bg-foreground/10 p-2 space-y-2 rounded-md">
         <div className="flex items-center gap-2 font-bold ">
-          <p className="text-sm">{comment.author.name}</p>
+          <p className="text-sm">u/{comment.author.name}</p>
           <div className="text-xs font-medium text-muted-foreground">{moment(comment.createdAt).fromNow()}</div>
         </div>
         <p className="mt-1 ">{comment.comment}</p>
-      </div>
-      <div className=" space-y-4 border-l-2 border-foreground/40 ml-2 w-full ">
-        {comment.replies.map((reply) => (
-          <div key={reply.id} className="p-2">
-            <div className="flex items-center gap-2 ">
-              <p className="font-bold text-sm">{reply.author?.name}</p>
-              <div className="text-xs text-muted-foreground">{moment(reply.createdAt).fromNow()}</div>
+        <span
+          className="flex justify-start items-center gap-2 cursor-pointer hover:bg-foreground/5 w-fit  p-1 rounded"
+          onClick={() => setShowReplyArea(!showReplyArea)}
+        >
+          <MessageSquare /> <p>Reply</p>
+        </span>
+        {showReplyArea && (
+          <div className="mt-4 flex items-start gap-4">
+            <div className="flex-1">
+              <Textarea
+                placeholder="Reply to this comment..."
+                className="mb-2 resize-none bg-background/60"
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
+              />
+              <Button size="sm" onClick={handleReply} loading={isLoading} disabled={isLoading}>
+                Post Reply
+              </Button>
             </div>
-            <p className="mt-1">{reply.comment}</p>
           </div>
-        ))}
+        )}
       </div>
-      <div className="mt-4 flex items-start gap-4">
-        <div className="flex-1">
-          <Textarea
-            placeholder="Reply to this comment..."
-            className="mb-2 resize-none"
-            onChange={(e) => setReplyText(e.target.value)}
-          />
-          <Button size="sm" onClick={async () => await onReply(comment.id, replyText)}>
-            Post Reply
-          </Button>
-        </div>
+
+      <div className=" space-y-4 border-l-2 border-foreground/40 ml-4 w-full ">
+        {comment.replies.map((reply) => (
+          <>
+            <div key={reply.id} className="p-2">
+              <div className="flex items-center gap-2 ">
+                <p className="font-bold text-sm">u/{reply.author?.name}</p>
+                <div className="text-xs text-muted-foreground">{moment(reply.createdAt).fromNow()}</div>
+              </div>
+              <p className="mt-1">{reply.comment}</p>
+            </div>
+          </>
+        ))}
       </div>
     </div>
   );
 }
-function PostContainer(props: { title: string; body: string; author: string | undefined; createdAt: Date }) {
+function PostContainer(props: { post: Post | undefined; onVote: () => Promise<void> }) {
+  if (!props.post) {
+    return <Card className="p-4">Invalid Post</Card>;
+  }
+  const isUpvoted = props.post.upvote.find((item) => item.userId === getCurrentUserId());
   return (
     <Card className="space-y-6">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold mb-2">{props.title}</CardTitle>
+        <CardTitle className="text-3xl font-bold mb-2">{props.post.title}</CardTitle>
         <CardDescription className="flex justify-start items-center gap-2">
-          Posted by <p className="font-bold">u/{props.author}</p> on {moment(props.createdAt!).format('DD-MM-YYYY')}
+          Posted by <p className="font-bold">u/{props.post.author.name}</p> on{' '}
+          {moment(props.post.createdAt!).format('MMM D, YYYY')}
         </CardDescription>
       </CardHeader>
-      <CardContent className="prose prose-lg dark:prose-invert">{props.body}</CardContent>
+      <CardContent>{props.post.body}</CardContent>
+      <CardFooter className="justify-start gap-12 border-t  p-4">
+        <span className="flex justify-start items-center gap-1" onClick={props.onVote}>
+          <ArrowBigUp fill={isUpvoted ? 'currentColor' : 'none'} />
+          <p>{props.post.totalVotes}</p>
+        </span>
+      </CardFooter>
     </Card>
   );
 }

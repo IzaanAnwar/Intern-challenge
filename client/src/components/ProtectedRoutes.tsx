@@ -13,6 +13,7 @@ export function ProtectedRoute() {
   const location = useLocation();
 
   const userSession = getAuthSession();
+  console.log({ userSession });
 
   if (!userSession) {
     console.log('Redirecting to login page');

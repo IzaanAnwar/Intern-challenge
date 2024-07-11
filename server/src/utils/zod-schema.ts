@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const signupSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
-  name: z.string(),
+  name: z.string().max(256).regex(/^\S*$/, 'Username must not contain spaces'),
 });
 
 export const signinSchema = z.object({

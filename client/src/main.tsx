@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <Toaster
         toastOptions={{
           classNames: {
-            success: 'bg-success text-success-foreground border-success-700',
+            success: 'bg-green-500 text-white border-green-700',
             error: 'bg-red-500 text-white border-red-700',
           },
         }}

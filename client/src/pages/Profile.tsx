@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { api } from '@/lib/axios-instance';
-import { CircleUser, UserIcon } from 'lucide-react';
+import { UserIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
@@ -8,19 +8,21 @@ import { Profile } from 'types';
 import { Link, useParams } from 'react-router-dom';
 import { ProfileLoadingPage } from '@/components/loading-page';
 import { TwitterShareButton, XIcon } from 'react-share';
+import { getAuthSession } from '@/lib/utils';
 
 const SHARE_PROFILE_HEADING = 'Check out my progress';
 
 export default function ProfilePage() {
   const currUrl = window.location.href;
   const params = useParams();
+  const userSession = getAuthSession();
 
   const [profileData, setProfileData] = useState<Profile | undefined>();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     async function getProfileData() {
       try {
-        const res = await api.get(`/profile/${params.username}`);
+        const res = await api.get(`/profile/${params.username?.toLowerCase()}`);
         if (res.status !== 200) {
           throw new Error('Error getting all posts');
         }
@@ -56,19 +58,21 @@ export default function ProfilePage() {
           <div className="bg-primary rounded-full px-6 py-2 text-primary-foreground font-bold text-4xl">
             {profileData?.score?.score || 0}
           </div>
-          <div className="flex gap-4">
-            <Link to="#" className="hover:underline p-2 rounded-md hover:bg-accent">
-              <TwitterShareButton url={currUrl} title={SHARE_PROFILE_HEADING} className="" tabIndex={1}>
-                <XIcon className="w-6 h-6 text-[#1DA1F2]" />
-              </TwitterShareButton>
-            </Link>
-            <Link to="#" className="hover:underline p-2 rounded-md hover:bg-accent">
-              <InstagramIcon className="w-6 h-6 text-[#E1306C]" />
-            </Link>
-            <Link to="#" className="hover:underline p-2 rounded-md hover:bg-accent">
-              <FacebookIcon className="w-6 h-6 text-[#4267B2]" />
-            </Link>
-          </div>
+          {userSession?.userId === profileData?.id && (
+            <div className="flex gap-4">
+              <Link to="#" className="hover:underline p-2 rounded-md hover:bg-accent">
+                <TwitterShareButton url={currUrl} title={SHARE_PROFILE_HEADING} className="" tabIndex={1}>
+                  <XIcon className="w-6 h-6 text-[#1DA1F2]" />
+                </TwitterShareButton>
+              </Link>
+              <Link to="#" className="hover:underline p-2 rounded-md hover:bg-accent">
+                <InstagramIcon className="w-6 h-6 text-[#E1306C]" />
+              </Link>
+              <Link to="#" className="hover:underline p-2 rounded-md hover:bg-accent">
+                <FacebookIcon className="w-6 h-6 text-[#4267B2]" />
+              </Link>
+            </div>
+          )}
         </div>
       </Card>
     </main>

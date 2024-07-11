@@ -6,6 +6,8 @@ import { Dashboard } from './pages/Dashboard';
 import Profile from './pages/Profile';
 import PostComments from './pages/PostComments';
 import { UsersPosts } from './pages/UsersPosts';
+import { ProtectedRoute } from './components/ProtectedRoutes';
+import PageNotFoundError from './components/PageNotFoundError';
 
 function App() {
   return (
@@ -14,10 +16,13 @@ function App() {
       <Routes>
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/:postId" element={<PostComments />} />
+          <Route path="/user-posts/" element={<UsersPosts />} />
+        </Route>
         <Route path="/profile/:username" element={<Profile />} />
-        <Route path="/dashboard/:postId" element={<PostComments />} />
-        <Route path="/user-posts/" element={<UsersPosts />} />
+        <Route path="*" element={<PageNotFoundError />} />
       </Routes>
     </BrowserRouter>
   );

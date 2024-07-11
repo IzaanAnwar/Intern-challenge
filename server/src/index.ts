@@ -13,6 +13,7 @@ import postsRouter from './routes/posts';
 import profileRouter from './routes/profile';
 
 import { authenticateToken } from './services/authorizationMiddleware';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 app.use(bodyParser.json());
 app.use(helmet());
@@ -42,22 +43,26 @@ app.use('/api/profile/', profileRouter);
 
 /* Error handler middleware */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  // Default status code for errors
   let statusCode = 500;
-  let message = 'Internal Server Error';
+  let message = err.message;
 
-  // Handle specific MongoDB errors
-  if (err instanceof MongoError) {
-    if (err.message.includes('Malformed ObjectID')) {
-      statusCode = 400; // Bad Request
-      message = 'Invalid ObjectID provided';
-    } else {
-      message = err.errmsg;
+  if (err instanceof PrismaClientKnownRequestError) {
+    if (err.code === 'P2002') {
+      statusCode = 400;
+      const errMeta = (err.meta?.target as string) || 'unknown';
+      message = errMeta.split('_').at(-2) + ' already exsits';
+      console.log({ err: err, meta: err.meta });
     }
+    // Add more Prisma error codes handling as needed
   }
-  console.error({ err });
-  res.status(statusCode).json({ message });
+  // Log the error details for debugging
+  console.error({
+    errorType: err.constructor.name,
+    errorMessage: message,
+    stack: err.stack,
+  });
 
+  res.status(statusCode).json({ message });
   return;
 });
 

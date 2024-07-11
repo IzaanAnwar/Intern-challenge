@@ -33,7 +33,7 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
     const userCreated = await db.user.create({
       data: {
         email: email,
-        name: name,
+        name: name.toLowerCase(),
         password: hashedPassword,
       },
     });
@@ -43,7 +43,7 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
     const token = await jwt.sign(
       {
         userId: userCreated.id,
-        name: userCreated.name,
+        name: userCreated.name.toLowerCase(),
         email: userCreated.email,
       },
       secret,

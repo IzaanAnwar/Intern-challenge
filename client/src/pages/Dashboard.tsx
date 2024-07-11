@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowBigUp, CircleUser, DessertIcon, MessageSquare, PlusCircle } from 'lucide-react';
+import { ArrowBigUp, DessertIcon, MessageSquare } from 'lucide-react';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import moment from 'moment';
@@ -148,7 +148,7 @@ export function Dashboard() {
             )}
             <section className="space-y-6">
               <h1 className="text-lg font-bold">Latest Posts</h1>
-              {posts?.map((post, i) => {
+              {posts?.map((post) => {
                 const userSession = getAuthSession();
                 const isUpvoted = post.upvote.find((item) => item.userId === userSession?.userId);
 
@@ -178,10 +178,13 @@ export function Dashboard() {
                           <p>{post.totalVotes}</p>
                         </span>
 
-                        <span className="flex justify-start items-center gap-1">
+                        <Link
+                          to={`/dashboard/${post.id}`}
+                          className="flex justify-start items-center gap-1 hover:text-primary"
+                        >
                           <MessageSquare fill={'none'} />
                           <p>{post.comments.length}</p>
-                        </span>
+                        </Link>
                       </CardFooter>
                     </div>
                   </Card>

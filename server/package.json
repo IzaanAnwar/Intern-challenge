@@ -7,7 +7,7 @@
     "lint": "tsc",
     "format": "prettier --write src/**/*.ts",
     "dev": "nodemon ./src/index.ts",
-    "start": "node public/bundle.js",
+    "start": "node ./public/bundle.js",
     "build": "webpack --mode production"
     
   },

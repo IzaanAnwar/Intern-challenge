@@ -1,4 +1,4 @@
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { ModeToggle } from './mode-toggle';
-import { useEffect, useState } from 'react';
 import { api } from '@/lib/axios-instance';
 import { cn, getAuthSession } from '@/lib/utils';
 import Cookies from 'js-cookie';

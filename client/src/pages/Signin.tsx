@@ -9,11 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { api } from '@/lib/axios-instance';
+import { getAuthSession } from '@/lib/utils';
 
 export default function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const userSession = getAuthSession();
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -32,10 +33,9 @@ export default function Signin() {
       if (res.status !== 200) {
         throw new Error(res.data?.message || 'Something went wrong');
       }
-      const data = (await res.data) as { token: string; userId: string; name: string };
+      const data = (await res.data) as { token: string };
       Cookies.set('access_token', data.token, { secure: true, expires: 1 });
-      Cookies.set('user_id', data.userId, { secure: true, expires: 1 });
-      Cookies.set('name', data.name, { secure: true, expires: 1 });
+
       setIsSuccess(true);
     } catch (error: any) {
       let errMsg = '';
@@ -50,7 +50,7 @@ export default function Signin() {
       setIsLoading(false);
     }
   };
-  if (isSuccess) {
+  if (isSuccess || userSession) {
     return <Navigate to="/dashboard" />;
   }
 

@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { api } from '@/lib/axios-instance';
+import { getAuthSession } from '@/lib/utils';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -21,6 +22,8 @@ export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const userSession = getAuthSession();
 
   useEffect(() => {
     if (password && passwordConfirm) {
@@ -46,10 +49,9 @@ export default function Signup() {
       if (res.status !== 201) {
         throw new Error(res.data?.message || 'Could not create user');
       }
-      const data = (await res.data) as { token: string; userId: string; name: string };
+      const data = (await res.data) as { token: string };
       Cookies.set('access_token', data.token, { secure: true, expires: 1 });
-      Cookies.set('user_id', data.userId, { secure: true, expires: 1 });
-      Cookies.set('name', data.name, { secure: true, expires: 1 });
+
       toast.success('Signup Success');
       setIsSuccess(true);
     } catch (error: any) {
@@ -65,7 +67,7 @@ export default function Signup() {
       setIsLoading(false);
     }
   };
-  if (isSuccess) {
+  if (isSuccess || userSession) {
     return <Navigate to="/dashboard" />;
   }
   return (

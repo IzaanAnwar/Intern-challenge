@@ -8,12 +8,14 @@ import PostComments from './pages/PostComments';
 import { UsersPosts } from './pages/UsersPosts';
 import { ProtectedRoute } from './components/ProtectedRoutes';
 import PageNotFoundError from './components/PageNotFoundError';
+import LandingPage from './pages/LandingPage';
 
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route element={<ProtectedRoute />}>

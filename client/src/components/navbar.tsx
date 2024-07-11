@@ -46,7 +46,7 @@ export default function Navbar() {
     return <PublicNavbar />;
   }
   return (
-    <header className="sticky top-0 justify-between w-full flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-50">
+    <header className="sticky top-0 justify-between w-full flex h-16 items-center gap-4 border-b bg-background px-4 md:px-12 lg:px-20 z-50">
       <nav className="hidden   gap-6 text-lg font-medium md:flex md:justify-start w-full  md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Link to="/" className="flex items-center justify-center gap-2 text-lg font-semibold md:text-base">
           <img src="/logo.png" width={32} height={32} />

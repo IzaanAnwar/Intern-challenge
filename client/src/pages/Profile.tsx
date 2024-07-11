@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Profile } from 'types';
 import { Link, useParams } from 'react-router-dom';
 import { ProfileLoadingPage } from '@/components/loading-page';
-import { TwitterShareButton, XIcon } from 'react-share';
+import { FacebookMessengerShareButton, TwitterShareButton, XIcon } from 'react-share';
 import { getAuthSession } from '@/lib/utils';
 
 const SHARE_PROFILE_HEADING = 'Check out my progress';
@@ -69,7 +69,9 @@ export default function ProfilePage() {
                 <InstagramIcon className="w-6 h-6 text-[#E1306C]" />
               </Link>
               <Link to="#" className="hover:underline p-2 rounded-md hover:bg-accent">
-                <FacebookIcon className="w-6 h-6 text-[#4267B2]" />
+                <FacebookMessengerShareButton appId={'acme inc'} url={currUrl} title={SHARE_PROFILE_HEADING}>
+                  <FacebookIcon className="w-6 h-6 text-[#4267B2]" />
+                </FacebookMessengerShareButton>
               </Link>
             </div>
           )}

@@ -38,7 +38,7 @@ app.get('/api/hello', (req, res) => {
 
 app.use('/api/', authRouter);
 app.use('/api/posts/', authenticateToken, postsRouter);
-app.use('/api/profile/', authenticateToken, profileRouter);
+app.use('/api/profile/', profileRouter);
 
 /* Error handler middleware */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

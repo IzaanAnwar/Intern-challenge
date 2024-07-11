@@ -1,7 +1,7 @@
 {
-  "name": "crdsi-equipment-booking-backend",
+  "name": "acme-backend",
   "version": "1.0.0",
-  "description": "Backend for crdsi-equipment-booking",
+  "description": "Backend for Intern Challenge",
   "main": "public/bundle.js",
   "scripts": {
     "lint": "tsc",
@@ -9,8 +9,7 @@
     "dev": "nodemon ./src/index.ts",
     "start": "node public/bundle.js",
     "build": "webpack --mode production",
-    "generate": "drizzle-kit generate --config=./drizzle.config.ts",
-    "push": "drizzle-kit push --config=./drizzle.config.ts"
+    
   },
   "author": "Izaan",
   "license": "ISC",

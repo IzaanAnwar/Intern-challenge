@@ -3,10 +3,11 @@ FROM node:20-alpine AS build-stage
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install pnpm -g
+RUN pnpm install
 
 COPY . . 
-RUN npm run build
+RUN pnpm run build
 
 
 EXPOSE 8000 

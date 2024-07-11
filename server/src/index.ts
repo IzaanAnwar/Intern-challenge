@@ -16,7 +16,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 app.use(bodyParser.json());
 app.use(helmet());
-app.use(morgan('dev'));
+app.use(morgan('combined'));
 app.use(
   bodyParser.urlencoded({
     extended: true,
@@ -24,6 +24,7 @@ app.use(
 );
 
 const appUrl = process.env.APP_URL;
+console.log(appUrl);
 
 app.use(
   cors({

@@ -15,10 +15,11 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { ModeToggle } from './mode-toggle';
 import { useState } from 'react';
 import { api } from '@/lib/axios-instance';
-import { cn } from '@/lib/utils';
+import { cn, getCurrentUserName } from '@/lib/utils';
 
 export default function Navbar() {
   const location = useLocation();
+  const currUserName = getCurrentUserName();
 
   const [loggedOut, setLoggedOut] = useState(false);
   async function handleLogOut() {
@@ -69,7 +70,7 @@ export default function Navbar() {
           My Posts
         </Link>
         <Link
-          to="/profile"
+          to={`/profile/${currUserName}`}
           className={cn(
             'text-muted-foreground hover:text-foreground',
             location.pathname.includes('/profile') && 'font-bold',

@@ -32,3 +32,11 @@ export function PostCardsLoading() {
     </div>
   );
 }
+
+export function ProfileLoadingPage() {
+  return (
+    <div className="w-full pt-24 flex items-center justify-center bg-background">
+      <Skeleton className="w-full md:w-[50%] lg:w-[30%] mx-auto h-[50vh]" />
+    </div>
+  );
+}

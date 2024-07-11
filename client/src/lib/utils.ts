@@ -9,3 +9,6 @@ export function cn(...inputs: ClassValue[]) {
 export function getCurrentUserId() {
   return Cookies.get('user_id');
 }
+export function getCurrentUserName() {
+  return Cookies.get('name');
+}

@@ -16,6 +16,7 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [name, setName] = useState('');
+  const [usernameError, setUsernameError] = useState('');
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
@@ -45,9 +46,10 @@ export default function Signup() {
       if (res.status !== 201) {
         throw new Error(res.data?.message || 'Could not create user');
       }
-      const data = (await res.data) as { token: string; userId: string };
+      const data = (await res.data) as { token: string; userId: string; name: string };
       Cookies.set('access_token', data.token, { secure: true, expires: 1 });
       Cookies.set('user_id', data.userId, { secure: true, expires: 1 });
+      Cookies.set('name', data.name, { secure: true, expires: 1 });
       toast.success('Signup Success');
       setIsSuccess(true);
     } catch (error: any) {
@@ -77,7 +79,22 @@ export default function Signup() {
           <div className="grid gap-4">
             <div className="grid  gap-2">
               <Label htmlFor="last-name">Name</Label>
-              <Input id="full-name" placeholder="Robinson Greyrat" required onChange={(e) => setName(e.target.value)} />
+              <Input
+                id="full-name"
+                placeholder="Robinson Greyrat"
+                required
+                value={name}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  if (/\s/.test(inputValue)) {
+                    setUsernameError('Name must not contain spaces');
+                  } else {
+                    setUsernameError('');
+                  }
+                  setName(inputValue);
+                }}
+              />
+              <span className="text-red-500">{usernameError}</span>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -86,12 +103,13 @@ export default function Signup() {
                 type="email"
                 placeholder="m@example.com"
                 required
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="grid gap-2 relative">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="text" onChange={(e) => setPassword(e.target.value)} />
+              <Input id="password" type="text" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div className="grid gap-2 relative">
               <Label htmlFor="password">Confirm Password</Label>
@@ -100,6 +118,7 @@ export default function Signup() {
               </span>
               <Input
                 id="password"
+                value={passwordConfirm}
                 type={visible ? 'text' : 'password'}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
               />

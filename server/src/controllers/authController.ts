@@ -55,7 +55,7 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
       await db.revokedTokens.delete({ where: { token: token } });
     }
 
-    return res.status(201).json({ token, userId: userCreated.id });
+    return res.status(201).json({ token, userId: userCreated.id, name: userCreated.name });
   } catch (error) {
     next(error); // Pass errors to your error-handling middleware
   }
@@ -100,7 +100,7 @@ export async function signin(req: Request, res: Response, next: NextFunction) {
       await db.revokedTokens.delete({ where: { token: token } });
     }
 
-    return res.status(200).json({ token, userId: user.id });
+    return res.status(200).json({ token, userId: user.id, name: user.name });
   } catch (error) {
     next(error); // Pass errors to your error-handling middleware
   }

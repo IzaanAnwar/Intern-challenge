@@ -1,6 +1,5 @@
 import express, { type Response, type Request, type NextFunction } from 'express';
-import { ErrorRequestHandler } from 'express';
-import { MongoError } from 'mongodb';
+import 'dotenv/config';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -24,7 +23,7 @@ app.use(
   }),
 );
 
-const appUrl = 'http://localhost:5173';
+const appUrl = process.env.APP_URL;
 
 app.use(
   cors({

@@ -9,7 +9,7 @@ import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import moment from 'moment';
 import { ArrowBigUp, MessageSquare } from 'lucide-react';
-import { getCurrentUserId } from '@/lib/utils';
+import { getAuthSession } from '@/lib/utils';
 import { PostPageLoading } from '@/components/loading-page';
 
 export default function PostComments() {
@@ -229,7 +229,7 @@ function PostContainer(props: { post: Post | undefined; onVote: () => Promise<vo
   if (!props.post) {
     return <Card className="p-4">Invalid Post</Card>;
   }
-  const isUpvoted = props.post.upvote.find((item) => item.userId === getCurrentUserId());
+  const isUpvoted = props.post.upvote.find((item) => item.userId === getAuthSession()?.userId);
   return (
     <Card className="space-y-6">
       <CardHeader>

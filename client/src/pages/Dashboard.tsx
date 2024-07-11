@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { api } from '@/lib/axios-instance';
-import { getCurrentUserId } from '@/lib/utils';
+import { getAuthSession } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { PostCardsLoading } from '@/components/loading-page';
 
@@ -149,8 +149,8 @@ export function Dashboard() {
             <section className="space-y-6">
               <h1 className="text-lg font-bold">Latest Posts</h1>
               {posts?.map((post, i) => {
-                const currUserId = getCurrentUserId();
-                const isUpvoted = post.upvote.find((item) => item.userId === currUserId);
+                const userSession = getAuthSession();
+                const isUpvoted = post.upvote.find((item) => item.userId === userSession?.userId);
 
                 return (
                   <Card

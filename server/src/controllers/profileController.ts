@@ -1,17 +1,14 @@
 import { type Response, type Request, type NextFunction } from 'express';
 import { db } from '../config/db';
+import { z } from 'zod';
 
 export async function getProfileInfo(req: Request, res: Response, next: NextFunction) {
-  const user = req.user;
-  if (!user || !user.userId) {
-    console.log('lo');
-
-    throw new Error('Please login ');
-  }
-
   try {
+    const { username } = z
+      .object({ username: z.string().max(256).regex(/^\S*$/, 'Username must not contain spaces') })
+      .parse(req.params);
     const profileInfo = await db.user.findFirst({
-      where: { id: user.userId },
+      where: { name: username },
 
       select: {
         email: true,

@@ -3,6 +3,6 @@ import { Router } from 'express';
 
 const router: Router = Router();
 
-router.get('/', getProfileInfo);
+router.get('/:username', getProfileInfo);
 
 export default router;

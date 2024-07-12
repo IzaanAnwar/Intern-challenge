@@ -3,15 +3,16 @@ import jwt from 'jsonwebtoken';
 import { User } from '../../types/express';
 import { db } from '../config/db';
 
+// middleware to check if the user is authenticated
 export async function authenticateToken(req: Request, res: Response, next: NextFunction) {
   try {
     const token = req.headers.authorization;
 
-    console.log({ token });
-
     if (!token) {
       return res.sendStatus(401);
     }
+
+    // find if the token is alreadt revoked/expired
     const tokenData = await db.revokedTokens.findFirst({ where: { token: token } });
 
     if (tokenData?.token === token) {
@@ -23,7 +24,6 @@ export async function authenticateToken(req: Request, res: Response, next: NextF
       if (!secret) {
         throw new Error('Secret not found');
       }
-      console.log('[STARTING AUTHORIZATION]');
 
       const decoded = jwt.verify(token, secret) as User;
 

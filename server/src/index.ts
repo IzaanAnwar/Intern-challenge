@@ -13,6 +13,8 @@ import profileRouter from './routes/profile';
 
 import { authenticateToken } from './services/authorizationMiddleware';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ZodError } from 'zod';
+import { formatZodErrors } from 'utils/z-errors';
 
 app.use(bodyParser.json());
 app.use(helmet());
@@ -53,7 +55,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
       message = errMeta.split('_').at(-2) + ' already exsits';
       console.log({ err: err, meta: err.meta });
     }
-    // Add more Prisma error codes handling as needed
+  } else if (err instanceof ZodError) {
+    const formatedError = formatZodErrors(err);
+    message = formatedError?.message || 'Invalid Data Provided';
   }
   // Log the error details for debugging
   console.error({

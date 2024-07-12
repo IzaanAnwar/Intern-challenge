@@ -14,7 +14,7 @@ import profileRouter from './routes/profile';
 import { authenticateToken } from './services/authorizationMiddleware';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ZodError } from 'zod';
-import { formatZodErrors } from 'utils/z-errors';
+import { formatZodErrors } from './utils/z-errors';
 
 app.use(bodyParser.json());
 app.use(helmet());

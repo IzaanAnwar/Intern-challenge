@@ -30,7 +30,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const shareContent =
     profileData &&
-    `I'm proud to share my latest achievements with you. My current score is $  {profileData?.score?.score || 0}. Join me in celebrating success!`;
+    `I'm proud to share my latest achievements with you. My current score is ${profileData?.score?.score || 0}. Join me in celebrating success!`;
 
   useEffect(() => {
     async function getProfileData() {

@@ -241,7 +241,7 @@ function PostContainer(props: { post: Post | undefined; onVote: () => Promise<vo
       </CardHeader>
       <CardContent>{props.post.body}</CardContent>
       <CardFooter className="justify-start gap-12 border-t  p-4">
-        <span className="flex justify-start items-center gap-1" onClick={props.onVote}>
+        <span className="flex justify-start items-center gap-1 cursor-pointer" onClick={props.onVote}>
           <ArrowBigUp fill={isUpvoted ? 'currentColor' : 'none'} />
           <p>{props.post.totalVotes}</p>
         </span>

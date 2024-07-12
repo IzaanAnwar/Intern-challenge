@@ -97,6 +97,7 @@ Please submit your solution by July 15.
    ```bash
       PORT=your port # (optional) default is 8000 
       VITE_SERVER_URL=http://localhost:8000 
+      DATABASE_URL=mongodb url 
       VITE_JWT_SECRET=secret string should be same as    frontent VITE_JWT_SECRET
 - The secret can be generated with 
    ```bash
@@ -105,5 +106,8 @@ Please submit your solution by July 15.
 
       # windows and Mac
       best of luck 👍
-      # jk ... visit this url >> https://generate-secret.vercel.app/32
+      # jk ... visit this url => https://generate-secret.vercel.app/32
    
+`I am using TS for this project which helped me to eleminate unneccessary commenting on code for params and return types.
+I also "try" to name my variables and fucntions and in general write my code such that, fellow programmers are able to understand what the code is trying to do, and where I believed the code needed commenting I did comment that part.
+`

@@ -1,5 +1,6 @@
 # Intern-challenge
 
+
 # MERN Stack Dashboard Coding Challenge
 
 ## Objective
@@ -63,3 +64,46 @@ Please submit your solution by July 15.
    ```bash
    git clone https://github.com/your-github-username/mern-dashboard-challenge.git
    cd mern-dashboard-challenge
+
+
+### Setup Instructions:
+
+**Client (Frontend - Vite React)**:
+- Ensure Node.js is installed.
+- Navigate to the `client` folder:
+  ```bash
+      cd client
+      pnpm install
+      pnpm build
+      pnpm start # or "pnpm dev" for dev server
+
+-  Env variables for client app 
+   ```bash
+      VITE_SERVER_URL=http://localhost:8000 ## or whatever your port is
+      VITE_JWT_SECRET=secret string should be same as backend JWT_SECRET
+
+
+**Server (Backend - Express.js MongoDB  Prisma)**:
+- Ensure Node.js is installed.
+- Navigate to the `server` folder:
+  ```bash
+   cd server
+   pnpm install
+   pnpm generate
+   pnpm build
+   pnpm start # or "pnpm dev" for dev server
+
+-  Env variables for server app 
+   ```bash
+      PORT=your port # (optional) default is 8000 
+      VITE_SERVER_URL=http://localhost:8000 
+      VITE_JWT_SECRET=secret string should be same as    frontent VITE_JWT_SECRET
+- The secret can be generated with 
+   ```bash
+      # Linux
+      openssl rand -base64 32
+
+      # windows and Mac
+      best of luck 👍
+      # jk ... visit this url >> https://generate-secret.vercel.app/32
+   

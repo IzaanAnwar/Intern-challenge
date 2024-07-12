@@ -78,7 +78,7 @@
       PORT=your port # (optional) default is 8000 
       VITE_SERVER_URL=http://localhost:8000 
       DATABASE_URL=mongodb url 
-      VITE_JWT_SECRET=secret string should be same as    frontent VITE_JWT_SECRET
+      JWT_SECRET=secret string should be same as    frontent VITE_JWT_SECRET
 - The secret can be generated with 
    ```bash
       # Linux

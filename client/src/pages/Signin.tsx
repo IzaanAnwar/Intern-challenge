@@ -1,4 +1,4 @@
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Cookies from 'js-cookie';
@@ -12,6 +12,7 @@ import { api } from '@/lib/axios-instance';
 import { getAuthSession } from '@/lib/utils';
 
 export default function Signin() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const userSession = getAuthSession();
@@ -20,8 +21,10 @@ export default function Signin() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   const submitSignin = async () => {
+    console.log({ password, email });
+
     if (!password || !email) {
-      toast.error('Field missing');
+      toast.error('One or more field missing');
       return;
     }
     setIsLoading(true);
@@ -37,6 +40,7 @@ export default function Signin() {
       Cookies.set('access_token', data.token, { secure: true, expires: 1 });
 
       setIsSuccess(true);
+      navigate('/dashboard');
     } catch (error: any) {
       let errMsg = '';
       if (error instanceof AxiosError) {
@@ -70,16 +74,25 @@ export default function Signin() {
                 type="email"
                 placeholder="m@example.com"
                 required
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
             <div className="grid gap-2 relative">
-              <Label htmlFor="password">Confirm Password</Label>
+              <Label htmlFor="password">Password</Label>
               <span onClick={() => setVisible(!visible)} className="absolute  top-[1.75rem] right-4">
                 {visible ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
               </span>
-              <Input id="password" type={visible ? 'text' : 'password'} onChange={(e) => setPassword(e.target.value)} />
+              <Input
+                id="password"
+                type={visible ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setPassword(e.target.value);
+                }}
+              />
             </div>
             <Button type="submit" className="w-full" onClick={submitSignin} loading={isLoading} disabled={isLoading}>
               Login

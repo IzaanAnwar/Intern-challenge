@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Cookies from 'js-cookie';
@@ -24,6 +24,7 @@ export default function Signup() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   const userSession = getAuthSession();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (password && passwordConfirm) {
@@ -54,6 +55,7 @@ export default function Signup() {
 
       toast.success('Signup Success');
       setIsSuccess(true);
+      navigate('/dashboard');
     } catch (error: any) {
       let errMsg = '';
       if (error instanceof AxiosError) {

@@ -88,16 +88,16 @@ export default function Navbar() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
-          <nav className="grid gap-6 text-lg font-medium">
+          <nav className="grid gap-2 text-lg font-medium">
             <Link to="#" className="flex items-center gap-2 text-lg font-semibold">
-              <TvMinimal className="h-6 w-6" />
-              <span className="sr-only">Acme Inc</span>
+              <img src="/logo.png" width={32} height={32} />
+              <span className="">Acme Inc</span>
             </Link>
             <Link
               to="/dashboard"
               className={cn(
-                'text-muted-foreground hover:text-foreground',
-                location.pathname.includes('/dashboard') && 'font-bold',
+                'text-muted-foreground hover:text-foreground  rounded p-2 mt-12 ',
+                location.pathname.includes('/dashboard') && 'font-bold text-primary bg-primary/10',
               )}
             >
               Dashboard
@@ -105,8 +105,8 @@ export default function Navbar() {
             <Link
               to="/user-posts"
               className={cn(
-                'text-muted-foreground hover:text-foreground',
-                location.pathname.includes('/user-posts') && 'font-bold',
+                'text-muted-foreground hover:text-foreground  rounded p-2',
+                location.pathname.includes('/user-posts') && 'font-bold text-primary bg-primary/10',
               )}
             >
               My Posts
@@ -114,8 +114,8 @@ export default function Navbar() {
             <Link
               to={`/profile/${userSession.name}`}
               className={cn(
-                'text-muted-foreground hover:text-foreground',
-                location.pathname.includes('/profile') && 'font-bold',
+                'text-muted-foreground hover:text-foreground  rounded p-2',
+                location.pathname.includes('/profile') && 'font-bold text-primary bg-primary/10',
               )}
             >
               Profile

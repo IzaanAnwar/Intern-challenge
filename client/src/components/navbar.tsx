@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
-import { CircleUser, Menu, TvMinimal } from 'lucide-react';
+import { CircleUser, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

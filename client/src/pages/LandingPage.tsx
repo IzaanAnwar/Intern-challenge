@@ -115,8 +115,8 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <p>
-                    "I love using Acme Inc! The app is so easy to use and the\n achievements system keeps me engaged and
-                    motivated. Highly\n recommend!"
+                    "I love using Acme Inc! The app is so easy to use and the achievements system keeps me engaged and
+                    motivated. Highly recommend!"
                   </p>
                 </CardContent>
               </Card>
@@ -132,8 +132,8 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <p>
-                    "Acme Inc has been a game-changer for me. The social sharing\n features make it easy to connect with
-                    friends and show off\n my achievements. Highly recommended!"
+                    "Acme Inc has been a game-changer for me. The social sharing features make it easy to connect with
+                    friends and show off my achievements. Highly recommended!"
                   </p>
                 </CardContent>
               </Card>

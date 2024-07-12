@@ -112,7 +112,7 @@ export default function Navbar() {
               My Posts
             </Link>
             <Link
-              to="/profile"
+              to={`/profile/${userSession.name}`}
               className={cn(
                 'text-muted-foreground hover:text-foreground',
                 location.pathname.includes('/profile') && 'font-bold',
@@ -136,7 +136,10 @@ export default function Navbar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
-              <Link to="/profile" className="block w-full transition-colors hover:text-foreground">
+              <Link
+                to={`/profile/${userSession.name}`}
+                className="block w-full transition-colors hover:text-foreground"
+              >
                 Profile
               </Link>
             </DropdownMenuItem>

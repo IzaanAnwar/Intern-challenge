@@ -9,6 +9,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useTheme } from '@/components/theme-provider';
 
+/**
+ * Toggle Theme
+ */
 export function ModeToggle() {
   const { setTheme } = useTheme();
 

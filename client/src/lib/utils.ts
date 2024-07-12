@@ -6,6 +6,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * @param token string
+ */
 function decodeJWT(token: string) {
   const parts = token.split('.');
   if (parts.length !== 3) {
@@ -23,7 +26,10 @@ type UserSession = {
   userId: string;
 };
 
-// Function to verify JWT
+/**
+ * @param token string
+ * @param secret string
+ */
 function verifyJWT(token: string, secret: string) {
   try {
     return KJUR.jws.JWS.verifyJWT(token, secret, { alg: ['HS256'] });
@@ -31,6 +37,11 @@ function verifyJWT(token: string, secret: string) {
     return false;
   }
 }
+
+/**
+ *
+ * @returns user session
+ */
 export function getAuthSession() {
   try {
     const accessToken = Cookies.get('access_token');

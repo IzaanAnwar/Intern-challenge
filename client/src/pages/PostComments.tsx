@@ -21,7 +21,7 @@ export default function PostComments() {
   const [commentText, setCommentText] = useState<string>('');
 
   useEffect(() => {
-    async function getAllPosts() {
+    async function getPost() {
       try {
         console.log({ params });
 
@@ -46,7 +46,7 @@ export default function PostComments() {
       }
     }
     if (refetch) {
-      getAllPosts();
+      getPost();
     }
   }, [refetch]);
 
